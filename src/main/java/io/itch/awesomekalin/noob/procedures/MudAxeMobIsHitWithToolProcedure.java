@@ -1,41 +1,20 @@
 package io.itch.awesomekalin.noob.procedures;
 
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.chat.TextComponent;
 
-import java.util.Map;
-
-import io.itch.awesomekalin.noob.NoobModElements;
-import io.itch.awesomekalin.noob.NoobMod;
-
-@NoobModElements.ModElement.Tag
-public class MudAxeMobIsHitWithToolProcedure extends NoobModElements.ModElement {
-	public MudAxeMobIsHitWithToolProcedure(NoobModElements instance) {
-		super(instance, 9);
-	}
-
-	public static void executeProcedure(Map<String, Object> dependencies) {
-		if (dependencies.get("entity") == null) {
-			if (!dependencies.containsKey("entity"))
-				NoobMod.LOGGER.warn("Failed to load dependency entity for procedure MudAxeMobIsHitWithTool!");
+public class MudAxeMobIsHitWithToolProcedure {
+	public static void execute(Entity entity, ItemStack itemstack) {
+		if (entity == null)
 			return;
-		}
-		if (dependencies.get("itemstack") == null) {
-			if (!dependencies.containsKey("itemstack"))
-				NoobMod.LOGGER.warn("Failed to load dependency itemstack for procedure MudAxeMobIsHitWithTool!");
-			return;
-		}
-		Entity entity = (Entity) dependencies.get("entity");
-		ItemStack itemstack = (ItemStack) dependencies.get("itemstack");
-		entity.setCustomName(new StringTextComponent("Noobed"));
-		((itemstack)).setDisplayName(new StringTextComponent("HOW DARE YOU!"));
+		entity.setCustomName(new TextComponent("Noobed"));
+		(itemstack).setHoverName(new TextComponent("HOW DARE YOU!"));
 		{
 			Entity _ent = entity;
-			if (!_ent.world.isRemote && _ent.world.getServer() != null) {
-				_ent.world.getServer().getCommandManager().handleCommand(_ent.getCommandSource().withFeedbackDisabled().withPermissionLevel(4),
+			if (!_ent.level.isClientSide() && _ent.getServer() != null)
+				_ent.getServer().getCommands().performCommand(_ent.createCommandSourceStack().withSuppressedOutput().withPermission(4),
 						"effect @p poison 5 5");
-			}
 		}
 	}
 }

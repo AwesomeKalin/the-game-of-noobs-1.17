@@ -1,51 +1,40 @@
 
 package io.itch.awesomekalin.noob.item;
 
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Item;
 
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.IItemTier;
+import io.itch.awesomekalin.noob.init.NoobModTabs;
 
-import io.itch.awesomekalin.noob.itemgroup.NoobTabItemGroup;
-import io.itch.awesomekalin.noob.NoobModElements;
-
-@NoobModElements.ModElement.Tag
-public class MudShovelItem extends NoobModElements.ModElement {
-	@ObjectHolder("noob:mud_shovel")
-	public static final Item block = null;
-	public MudShovelItem(NoobModElements instance) {
-		super(instance, 38);
-	}
-
-	@Override
-	public void initElements() {
-		elements.items.add(() -> new ShovelItem(new IItemTier() {
-			public int getMaxUses() {
+public class MudShovelItem extends ShovelItem {
+	public MudShovelItem() {
+		super(new Tier() {
+			public int getUses() {
 				return 10;
 			}
 
-			public float getEfficiency() {
+			public float getSpeed() {
 				return 4f;
 			}
 
-			public float getAttackDamage() {
+			public float getAttackDamageBonus() {
 				return -1.9f;
 			}
 
-			public int getHarvestLevel() {
+			public int getLevel() {
 				return 1;
 			}
 
-			public int getEnchantability() {
+			public int getEnchantmentValue() {
 				return 1;
 			}
 
-			public Ingredient getRepairMaterial() {
+			public Ingredient getRepairIngredient() {
 				return Ingredient.EMPTY;
 			}
-		}, 1, -3f, new Item.Properties().group(NoobTabItemGroup.tab)) {
-		}.setRegistryName("mud_shovel"));
+		}, 1, -3f, new Item.Properties().tab(NoobModTabs.TAB_NOOB_TAB));
+		setRegistryName("mud_shovel");
 	}
 }

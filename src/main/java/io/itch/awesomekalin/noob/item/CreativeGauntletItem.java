@@ -1,96 +1,46 @@
 
 package io.itch.awesomekalin.noob.item;
 
-import net.minecraftforge.registries.ObjectHolder;
-
-import net.minecraft.world.World;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ActionResult;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Item;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.BlockState;
-
-import java.util.Map;
-import java.util.HashMap;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
 
 import io.itch.awesomekalin.noob.procedures.CreativeGauntletRightClickedProcedure;
-import io.itch.awesomekalin.noob.itemgroup.NoobTabItemGroup;
-import io.itch.awesomekalin.noob.NoobModElements;
+import io.itch.awesomekalin.noob.init.NoobModTabs;
 
-@NoobModElements.ModElement.Tag
-public class CreativeGauntletItem extends NoobModElements.ModElement {
-	@ObjectHolder("noob:creative_gauntlet")
-	public static final Item block = null;
-	public CreativeGauntletItem(NoobModElements instance) {
-		super(instance, 52);
+public class CreativeGauntletItem extends Item {
+	public CreativeGauntletItem() {
+		super(new Item.Properties().tab(NoobModTabs.TAB_NOOB_TAB).stacksTo(1).rarity(Rarity.EPIC));
+		setRegistryName("creative_gauntlet");
 	}
 
 	@Override
-	public void initElements() {
-		elements.items.add(() -> new ItemCustom());
+	public int getUseDuration(ItemStack itemstack) {
+		return 0;
 	}
-	public static class ItemCustom extends Item {
-		public ItemCustom() {
-			super(new Item.Properties().group(NoobTabItemGroup.tab).maxStackSize(1).rarity(Rarity.EPIC));
-			setRegistryName("creative_gauntlet");
-		}
 
-		@Override
-		public int getItemEnchantability() {
-			return 0;
-		}
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
+		InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
+		ItemStack itemstack = ar.getObject();
+		double x = entity.getX();
+		double y = entity.getY();
+		double z = entity.getZ();
 
-		@Override
-		public int getUseDuration(ItemStack itemstack) {
-			return 0;
-		}
+		CreativeGauntletRightClickedProcedure.execute(world, entity);
+		return ar;
+	}
 
-		@Override
-		public float getDestroySpeed(ItemStack par1ItemStack, BlockState par2Block) {
-			return 1F;
-		}
-
-		@Override
-		public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entity, Hand hand) {
-			ActionResult<ItemStack> ar = super.onItemRightClick(world, entity, hand);
-			ItemStack itemstack = ar.getResult();
-			double x = entity.getPosX();
-			double y = entity.getPosY();
-			double z = entity.getPosZ();
-			{
-				Map<String, Object> $_dependencies = new HashMap<>();
-				$_dependencies.put("entity", entity);
-				$_dependencies.put("world", world);
-				CreativeGauntletRightClickedProcedure.executeProcedure($_dependencies);
-			}
-			return ar;
-		}
-
-		@Override
-		public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-			ActionResultType retval = super.onItemUseFirst(stack, context);
-			World world = context.getWorld();
-			BlockPos pos = context.getPos();
-			PlayerEntity entity = context.getPlayer();
-			Direction direction = context.getFace();
-			BlockState blockstate = world.getBlockState(pos);
-			int x = pos.getX();
-			int y = pos.getY();
-			int z = pos.getZ();
-			ItemStack itemstack = context.getItem();
-			{
-				Map<String, Object> $_dependencies = new HashMap<>();
-				$_dependencies.put("entity", entity);
-				$_dependencies.put("world", world);
-				CreativeGauntletRightClickedProcedure.executeProcedure($_dependencies);
-			}
-			return retval;
-		}
+	@Override
+	public InteractionResult useOn(UseOnContext context) {
+		InteractionResult retval = super.useOn(context);
+		CreativeGauntletRightClickedProcedure.execute(context.getLevel(), context.getPlayer());
+		return retval;
 	}
 }
